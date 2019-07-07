@@ -1,5 +1,6 @@
 package com.example.weatherpollution
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("getBaseTime", "date: $baseDate, time: $baseTime")
 
+        startActivity(Intent(this, WeatherActivity::class.java))
     }
 
     data class TimeResult(val date: String, val time: String)
