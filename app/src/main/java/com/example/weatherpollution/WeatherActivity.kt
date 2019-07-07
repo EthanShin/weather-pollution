@@ -13,10 +13,15 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class WeatherActivity : AppCompatActivity(), LocationListener {
 
-    private  val PERMISSION_REQUEST_CODE = 2000
+    private val PERMISSION_REQUEST_CODE = 1000
+    private val SERVICE_KEY = "Service_key"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +44,11 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
             val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             if (location != null) {
-                val latitude = location?.latitude
-                val longitude = location?.longitude
+                val latitude = location.latitude
+                val longitude = location.longitude
 
                 Log.d("test_location", "1 lat = $latitude, lon = $longitude")
+                requestWeatherInfoOfLocation(latitude.toInt(), longitude.toInt())
             } else {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -67,6 +73,9 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         val longitude = location?.longitude
 
         Log.d("test_location", "2 lat = $latitude, lon = $longitude")
+        if (latitude != null && longitude != null) {
+            requestWeatherInfoOfLocation(latitude.toInt(), longitude.toInt())
+        }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -79,5 +88,28 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
     override fun onProviderDisabled(provider: String?) {
 
+    }
+
+    private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
+        (application as WeatherApplication)
+            .requestService()
+            ?.getWeatherInfoOfLocation(
+                serviceKey = SERVICE_KEY,
+                baseDate = "20190708",
+                baseTime = "0500",
+                nx = x,
+                ny = y,
+                numOfRows = 10,
+                pageNo = 1,
+                type = "json"
+            )
+            ?.enqueue(object: Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                }
+
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    Log.d("test_request", "response")
+                }
+            })
     }
 }
