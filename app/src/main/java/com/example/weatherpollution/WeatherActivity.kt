@@ -54,7 +54,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
             } else {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    3000L,
+                    0L,     // 수행대기시간
                     0F,
                     this
                 )
