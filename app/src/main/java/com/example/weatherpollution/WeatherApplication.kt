@@ -6,24 +6,34 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class WeatherApplication : Application() {
 
-    var service: Service? = null
+    var weatherService: Service? = null
+    var tmService: Service? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        setupRetrofit()
+        setupWeatherRetrofit()
     }
 
-    private fun setupRetrofit() {
+    private fun setupWeatherRetrofit() {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://newsky2.kma.go.kr/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        service = retrofit.create(Service::class.java)
+        weatherService = retrofit.create(Service::class.java)
+    }
+
+    private fun setupTMRetrofit() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://dapi.kakao.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        tmService = retrofit.create(Service::class.java)
     }
 
     fun requestService(): Service? {
-        return service
+        return weatherService
     }
 }
