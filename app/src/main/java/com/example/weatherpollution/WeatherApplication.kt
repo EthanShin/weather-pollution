@@ -16,7 +16,7 @@ class WeatherApplication : Application() {
 
     private fun setupRetrofit() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
+            .baseUrl("http://newsky2.kma.go.kr/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

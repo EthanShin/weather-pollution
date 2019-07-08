@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface Service {
 
-    @GET("/ForecastSpaceData")
+    @GET("/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData")
     fun getWeatherInfoOfLocation(
         @Query("ServiceKey") serviceKey: String,
         @Query("base_date") baseDate: String,
