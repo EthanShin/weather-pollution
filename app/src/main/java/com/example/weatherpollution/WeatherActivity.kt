@@ -130,6 +130,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
         Log.d("test_location", "3 x = $x, y = $y")
         requestWeatherInfoOfLocation(x, y)
+        request3hoursWeatherInfoOfLocation(x, y)
     }
 
     // 날짜와 시간을 API 서버가 요구하는 형태로 변경
@@ -149,11 +150,11 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         return TimeResult(checkDate.format(DateTimeFormatter.BASIC_ISO_DATE), checkDate.format(DateTimeFormatter.ofPattern("HHmm")))
     }
 
-    // 3시간 예보
+    // 초단기실황
     private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
-
         val date = LocalDateTime.now()  // 현재시간
-        val (baseDate, baseTime) = getBaseTime(date) // 날짜와 시간분리 ex)20190707, 0500
+        val baseDate = date.format(DateTimeFormatter.BASIC_ISO_DATE)
+        val baseTime = date.format(DateTimeFormatter.ofPattern("HHmm"))
 
         Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
 
@@ -177,38 +178,76 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
                     var weatherData = response.body() // Parser 사용
                     var items = weatherData?.response?.body?.items?.item
-                    Log.d("test_request", "body: " + items?.get(0)?.baseDate)
+                    Log.d("test_request", "1 body: " + items?.get(0)?.baseDate)
 
                     if (items != null) {
                         drawWeather(items)
                     }
                 }
             })
+
     }
 
-    // 3시간 예보로 획득한 값을 화면에 보여줌
+    // 3시간 예보
+    private fun request3hoursWeatherInfoOfLocation(x: Int, y: Int) {
+
+        val date = LocalDateTime.now()  // 현재시간
+        val (baseDate, baseTime) = getBaseTime(date) // 날짜와 시간분리 ex)20190707, 0500
+
+        Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
+
+        (application as WeatherApplication)
+            .requestService()
+            ?.get3hoursWeatherInfoOfLocation(
+                serviceKey = getString(R.string.SERVICE_KEY),
+                baseDate = baseDate,
+                baseTime = baseTime,
+                nx = x,
+                ny = y,
+                numOfRows = 10,
+                pageNo = 1,
+                type = "json"
+            )
+            ?.enqueue(object: Callback<WeatherData> {
+                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+                    var weatherData = response.body() // Parser 사용
+                    var items = weatherData?.response?.body?.items?.item
+                    Log.d("test_request", "2 body: " + items?.get(0)?.baseDate)
+
+//                    if (items != null) {
+//                        drawWeather(items)
+//                    }
+                }
+            })
+    }
+
+    // 초단기 실황으로 획득한 값을 화면에 보여줌
     private fun drawWeather(weather: ArrayList<Item>) {
         var sky = "맑음"
         var rain = false
         weather.forEach {
             when(it.category) {
                 "PTY" ->
-                    when(it.fcstValue) {
+                    when(it.obsrValue) {
                         "0" -> sky = "없음"
                         "1" -> sky = "비"
                         "2" -> sky = "비/눈"
                         "3" -> sky = "눈"
                     }
 
-                "R06" ->
-                    when(it.fcstValue) {
+                "RN1" ->
+                    when(it.obsrValue) {
                         "0" -> sky = "맑음"
                         "1" -> rain = true
                     }
 
                 "SKY" ->
                     if(!rain) {
-                        when (it.fcstValue) {
+                        when (it.obsrValue) {
                             "0" -> sky = "맑음"
                             "1" -> sky = "구름조금"
                             "2" -> sky = "구름많음"
@@ -216,11 +255,11 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                         }
                     }
 
-                "T3H" ->
-                    text_temperatures.text = it.fcstValue + " ℃"
+                "T1H" ->
+                    text_temperatures.text = it.obsrValue + " ℃"
 
                 "REH" ->
-                    text_humidity.text = it.fcstValue + " %"
+                    text_humidity.text = it.obsrValue + " %"
             }
 
             text_weather.text = sky

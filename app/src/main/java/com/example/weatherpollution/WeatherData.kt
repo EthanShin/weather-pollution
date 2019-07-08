@@ -30,7 +30,7 @@ class Item(
     var category: String? = null,
     var fcstDate: String? = null,
     var fcstTime: String? = null,
-    var fcstValue: String? = null,
+    var obsrValue: String? = null,
     var nx: String? = null,
     var ny: String? = null
 ): Serializable
