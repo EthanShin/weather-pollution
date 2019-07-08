@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -174,9 +175,51 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var weatherData = response.body() // Parser 사용
                     var items = weatherData?.response?.body?.items?.item
                     Log.d("test_request", "body: " + items?.get(0)?.baseDate)
-                    Log.d("test_request", "response: $response")
-                    Log.d("test_request", "response: " + response.body())
+
+                    if (items != null) {
+                        drawWeather(items)
+                    }
                 }
             })
+    }
+
+    private fun drawWeather(weather: ArrayList<Item>) {
+        var sky = "맑음"
+        var rain = false
+        weather.forEach {
+            when(it.category) {
+                "PTY" ->
+                    when(it.fcstValue) {
+                        "0" -> sky = "없음"
+                        "1" -> sky = "비"
+                        "2" -> sky = "비/눈"
+                        "3" -> sky = "눈"
+                    }
+
+                "R06" ->
+                    when(it.fcstValue) {
+                        "0" -> sky = "맑음"
+                        "1" -> rain = true
+                    }
+
+                "SKY" ->
+                    if(!rain) {
+                        when (it.fcstValue) {
+                            "0" -> sky = "맑음"
+                            "1" -> sky = "구름조금"
+                            "2" -> sky = "구름많음"
+                            "3" -> sky = "흐림"
+                        }
+                    }
+
+                "T3H" ->
+                    text_temperatures.text = it.fcstValue + " ℃"
+
+                "REH" ->
+                    text_humidity.text = it.fcstValue + " %"
+            }
+
+            text_weather.text = sky
+        }
     }
 }
