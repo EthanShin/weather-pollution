@@ -151,7 +151,38 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
     // 초단기실황
     private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
+        val date = LocalDateTime.now()  // 현재시간
+        val (baseDate, baseTime) = getBaseTime(date) // 날짜와 시간분리 ex)20190707, 0500
 
+        Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
+
+        (application as WeatherApplication)
+            .requestService()
+            ?.getWeatherInfoOfLocation(
+                serviceKey = getString(R.string.SERVICE_KEY),
+                baseDate = baseDate,
+                baseTime = baseTime,
+                nx = x,
+                ny = y,
+                numOfRows = 10,
+                pageNo = 1,
+                type = "json"
+            )
+            ?.enqueue(object: Callback<WeatherData> {
+                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+                    var weatherData = response.body() // Parser 사용
+                    var items = weatherData?.response?.body?.items?.item
+                    Log.d("test_request", "body: " + items?.get(0)?.baseDate)
+
+//                    if (items != null) {
+//                        drawWeather(items)
+//                    }
+                }
+            })
 
     }
 
@@ -165,7 +196,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
         (application as WeatherApplication)
             .requestService()
-            ?.getWeatherInfoOfLocation(
+            ?.get3hoursWeatherInfoOfLocation(
                 serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
                 baseTime = baseTime,
