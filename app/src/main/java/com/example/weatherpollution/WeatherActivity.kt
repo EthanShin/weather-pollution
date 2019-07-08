@@ -165,12 +165,12 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                 pageNo = 1,
                 type = "json"
             )
-            ?.enqueue(object: Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+            ?.enqueue(object: Callback<WeatherData> {
+                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
                     Log.d("test_request", "response_fail: $t")
                 }
 
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
                     Log.d("test_request", "response: $response")
                     Log.d("test_request", "response: " + response.body())
                 }

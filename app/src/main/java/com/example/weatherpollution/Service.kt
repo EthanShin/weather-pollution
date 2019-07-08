@@ -1,6 +1,5 @@
 package com.example.weatherpollution
 
-import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +16,5 @@ interface Service {
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String
-    ): Call<JsonObject>
+    ): Call<WeatherData>
 }
