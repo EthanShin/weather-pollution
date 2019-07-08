@@ -13,6 +13,7 @@ class WeatherApplication : Application() {
         super.onCreate()
 
         setupWeatherRetrofit()
+        setupTMRetrofit()
     }
 
     private fun setupWeatherRetrofit() {
@@ -33,7 +34,10 @@ class WeatherApplication : Application() {
         tmService = retrofit.create(Service::class.java)
     }
 
-    fun requestService(): Service? {
-        return weatherService
+    fun requestService(serviceNumber: Int): Service? {
+        return when(serviceNumber) {
+            0 -> weatherService
+            else -> tmService
+        }
     }
 }

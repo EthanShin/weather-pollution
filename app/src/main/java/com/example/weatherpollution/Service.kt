@@ -1,7 +1,10 @@
 package com.example.weatherpollution
 
+import com.example.weatherpollution.R.string.KAKAO_KEY
+import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface Service {
@@ -29,4 +32,14 @@ interface Service {
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String
     ): Call<WeatherData>
+
+
+    @Headers("Authorization: KakaoAK 0aea8adb196b0c94e06dfc9bb6e95510")
+    @GET("/v2/local/geo/transcoord.json")
+    fun getTMlocation(
+        @Query("x") x: Double,
+        @Query("y") y: Double,
+        @Query("output_coord") outputCoord: String
+    ): Call<JsonObject>
+
 }

@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,6 +53,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
                 Log.d("test_location", "1 lat = $latitude, lon = $longitude")
                 changeLocationTypeToXY(latitude, longitude)
+                changeLocationTypeToTM(latitude, longitude)
             } else {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -79,6 +81,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         Log.d("test_location", "2 lat = $latitude, lon = $longitude")
         if (latitude != null && longitude != null) {
             changeLocationTypeToXY(latitude, longitude)
+            changeLocationTypeToTM(latitude, longitude)
         }
     }
 
@@ -89,6 +92,25 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
     }
 
     override fun onProviderDisabled(provider: String?) {
+    }
+
+    private fun changeLocationTypeToTM(lat: Double, lon: Double) {
+        (application as WeatherApplication)
+            .requestService(1)
+            ?.getTMlocation(
+                x = lon,
+                y = lat,
+                outputCoord = "TM"
+            )
+            ?.enqueue(object: Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    Log.d("test_request", "tm body: " + response.body())
+                }
+            })
     }
 
     // 위도, 경도 값을 API 서버가 요구하는 X, Y 좌표로 변경
@@ -159,7 +181,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
 
         (application as WeatherApplication)
-            .requestService()
+            .requestService(0)
             ?.getWeatherInfoOfLocation(
                 serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
@@ -197,7 +219,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
 
         (application as WeatherApplication)
-            .requestService()
+            .requestService(0)
             ?.get3hoursWeatherInfoOfLocation(
                 serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
