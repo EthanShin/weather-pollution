@@ -24,7 +24,6 @@ import kotlin.math.*
 class WeatherActivity : AppCompatActivity(), LocationListener {
 
     private val PERMISSION_REQUEST_CODE = 1000
-    private val SERVICE_KEY = "****"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,7 +156,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         (application as WeatherApplication)
             .requestService()
             ?.getWeatherInfoOfLocation(
-                serviceKey = SERVICE_KEY,
+                serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
                 baseTime = baseTime,
                 nx = x,
