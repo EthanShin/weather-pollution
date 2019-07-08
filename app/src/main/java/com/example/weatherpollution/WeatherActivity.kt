@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +32,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         getLocationInfo()
     }
 
+    // GPS를 이용하여 위도, 경도 획득
     private fun getLocationInfo() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
                 this@WeatherActivity,
@@ -64,6 +64,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         }
     }
 
+    // Location Permission 요청 결과
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -90,6 +91,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
     override fun onProviderDisabled(provider: String?) {
     }
 
+    // 위도, 경도 값을 API 서버가 요구하는 X, Y 좌표로 변경
     private fun changeLocationTypeToXY(lat: Double, lon: Double) {
         val Re = 6371.00877
         val grid = 5.0
@@ -130,8 +132,8 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         requestWeatherInfoOfLocation(x, y)
     }
 
+    // 날짜와 시간을 API 서버가 요구하는 형태로 변경
     data class TimeResult(val date: String, val time: String)
-
     private fun getBaseTime(date: LocalDateTime): TimeResult {
 
         var checkDate = date
@@ -147,6 +149,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         return TimeResult(checkDate.format(DateTimeFormatter.BASIC_ISO_DATE), checkDate.format(DateTimeFormatter.ofPattern("HHmm")))
     }
 
+    // 3시간 예보
     private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
 
         val date = LocalDateTime.now()  // 현재시간
@@ -183,6 +186,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
             })
     }
 
+    // 3시간 예보로 획득한 값을 화면에 보여줌
     private fun drawWeather(weather: ArrayList<Item>) {
         var sky = "맑음"
         var rain = false
