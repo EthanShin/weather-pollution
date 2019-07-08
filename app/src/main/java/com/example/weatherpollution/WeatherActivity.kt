@@ -129,7 +129,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         var y = (ro - ra * cos(theta) + yo + 1.5).toInt()
 
         Log.d("test_location", "3 x = $x, y = $y")
-        requestWeatherInfoOfLocation(x, y)
+        request3hoursWeatherInfoOfLocation(x, y)
     }
 
     // 날짜와 시간을 API 서버가 요구하는 형태로 변경
@@ -149,8 +149,14 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         return TimeResult(checkDate.format(DateTimeFormatter.BASIC_ISO_DATE), checkDate.format(DateTimeFormatter.ofPattern("HHmm")))
     }
 
-    // 3시간 예보
+    // 초단기실황
     private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
+
+
+    }
+
+    // 3시간 예보
+    private fun request3hoursWeatherInfoOfLocation(x: Int, y: Int) {
 
         val date = LocalDateTime.now()  // 현재시간
         val (baseDate, baseTime) = getBaseTime(date) // 날짜와 시간분리 ex)20190707, 0500
@@ -179,9 +185,9 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var items = weatherData?.response?.body?.items?.item
                     Log.d("test_request", "body: " + items?.get(0)?.baseDate)
 
-                    if (items != null) {
-                        drawWeather(items)
-                    }
+//                    if (items != null) {
+//                        drawWeather(items)
+//                    }
                 }
             })
     }
