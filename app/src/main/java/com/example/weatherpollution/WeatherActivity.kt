@@ -171,6 +171,9 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                 }
 
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+                    var weatherData = response.body() // Parser 사용
+                    var items = weatherData?.response?.body?.items?.item
+                    Log.d("test_request", "body: " + items?.get(0)?.baseDate)
                     Log.d("test_request", "response: $response")
                     Log.d("test_request", "response: " + response.body())
                 }
