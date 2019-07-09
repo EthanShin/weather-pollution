@@ -8,12 +8,14 @@ class WeatherApplication : Application() {
 
     var weatherService: Service? = null
     var tmService: Service? = null
+    var dustService: Service? = null
 
     override fun onCreate() {
         super.onCreate()
 
         setupWeatherRetrofit()
         setupTMRetrofit()
+        setupDustRetrofit()
     }
 
     private fun setupWeatherRetrofit() {
@@ -32,6 +34,15 @@ class WeatherApplication : Application() {
             .build()
 
         tmService = retrofit.create(Service::class.java)
+    }
+
+    private fun setupDustRetrofit() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://openapi.airkorea.or.kr/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        dustService = retrofit.create(Service::class.java)
     }
 
     fun requestService(serviceNumber: Int): Service? {
