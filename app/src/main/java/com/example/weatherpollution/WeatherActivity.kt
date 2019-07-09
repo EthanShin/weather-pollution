@@ -13,7 +13,9 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.google.gson.JsonObject
+import com.example.weatherpollution.Data.Item
+import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.WeatherData
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback

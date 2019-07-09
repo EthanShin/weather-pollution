@@ -1,5 +1,7 @@
 package com.example.weatherpollution
 
+import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.WeatherData
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
