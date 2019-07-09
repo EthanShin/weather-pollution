@@ -2,6 +2,7 @@ package com.example.weatherpollution
 
 import com.example.weatherpollution.Data.LocationData
 import com.example.weatherpollution.Data.WeatherData
+import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -42,4 +43,9 @@ interface Service {
         @Query("output_coord") outputCoord: String
     ): Call<LocationData>
 
+    @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getNearbyMsrstnList")
+    fun getMsrstnList(
+        @Query("tmX") x: Double,
+        @Query("tmY") y: Double
+    ): Call<JsonObject>
 }
