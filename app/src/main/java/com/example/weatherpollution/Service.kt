@@ -35,7 +35,7 @@ interface Service {
     ): Call<WeatherData>
 
 
-    @Headers("Authorization: KakaoAK ****")
+    @Headers("Authorization: KakaoAK " + BuildConfig.KAKAO_KEY)
     @GET("/v2/local/geo/transcoord.json")
     fun getTMlocation(
         @Query("x") x: Double,
@@ -45,6 +45,7 @@ interface Service {
 
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getNearbyMsrstnList")
     fun getMsrstnList(
+        @Query("ServiceKey") serviceKey: String,
         @Query("tmX") x: Double,
         @Query("tmY") y: Double
     ): Call<JsonObject>
