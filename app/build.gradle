@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+def credentialFile = file('credentials.properties')
+def credentialProperty = new Properties()
+credentialProperty.load(new FileInputStream(credentialFile))
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -13,6 +17,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "SERVICE_KEY", credentialProperty['SERVICE_KEY'])
+        buildConfigField("String", "KAKAO_KEY", credentialProperty['KAKAO_KEY'])
     }
     buildTypes {
         release {
