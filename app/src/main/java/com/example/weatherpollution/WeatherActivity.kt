@@ -13,9 +13,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.example.weatherpollution.Data.Item
-import com.example.weatherpollution.Data.LocationData
-import com.example.weatherpollution.Data.WeatherData
+import com.example.weatherpollution.Data.*
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -113,6 +111,66 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var locationData = response.body() // Parser 사용
                     var documents = locationData?.documents
                     Log.d("test_request", "tm body: " + documents?.get(0)?.x)
+                    Log.d("test_request", "tm body: " + documents?.get(0)?.y)
+
+                    if (documents != null) {
+                        requestMsrstnList(documents?.get(0)?.x.toString(), documents?.get(0)?.y.toString())
+                    }
+                }
+            })
+    }
+
+    // 가장 가까운 미세먼지 측정소의 목록을 요청하는 함수
+    private fun requestMsrstnList(x: String, y: String) {
+        (application as WeatherApplication)
+            .requestService(2)
+            ?.getMsrstnList(
+                serviceKey = BuildConfig.SERVICE_KEY,
+                x = x,
+                y = y,
+                returnType = "json"
+            )
+            ?.enqueue(object: Callback<MsrstnData> {
+                override fun onFailure(call: Call<MsrstnData>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<MsrstnData>, response: Response<MsrstnData>) {
+                    var msrstnData = response.body() // Parser 사용
+                    var list = msrstnData?.list
+                    Log.d("test_request", "ms body: " + list?.get(0)?.stationName)
+
+                    if (list != null) {
+                        requestDustInfo(list?.get(0)?.stationName.toString())
+                    }
+                }
+            })
+    }
+
+    // 미세먼지 정보를 요청하는 함수
+    private fun requestDustInfo(station: String) {
+        (application as WeatherApplication)
+            .requestService(2)
+            ?.getDustInfo(
+                serviceKey = BuildConfig.SERVICE_KEY,
+                station = station,
+                dataTerm = "DAILY",
+                returnType = "json",
+                version = "1.3"
+            )
+            ?.enqueue(object: Callback<DustData> {
+                override fun onFailure(call: Call<DustData>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<DustData>, response: Response<DustData>) {
+                    var dustData = response.body() // Parser 사용
+                    var list = dustData?.list
+                    Log.d("test_request", "dust body: " + list?.get(0)?.dataTime)
+
+                    if (list != null) {
+                        drawDust(list)
+                    }
                 }
             })
     }
@@ -202,7 +260,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         (application as WeatherApplication)
             .requestService(0)
             ?.getWeatherInfoOfLocation(
-                serviceKey = getString(R.string.SERVICE_KEY),
+                serviceKey = BuildConfig.SERVICE_KEY,
                 baseDate = baseDate,
                 baseTime = baseTime,
                 nx = x,
@@ -240,7 +298,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         (application as WeatherApplication)
             .requestService(0)
             ?.get3hoursWeatherInfoOfLocation(
-                serviceKey = getString(R.string.SERVICE_KEY),
+                serviceKey = BuildConfig.SERVICE_KEY,
                 baseDate = baseDate,
                 baseTime = baseTime,
                 nx = x,
@@ -305,5 +363,10 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
             text_weather.text = sky
         }
+    }
+
+    // 미세먼지 정보를 획득한 값을 화면에 보여줌
+    private fun drawDust(dust: ArrayList<DustList>) {
+        text_dust.text = "미세먼지" + dust[0]?.pm10Value + "\n초미세먼지" + dust[0]?.pm25Value + "\n" + dust[0]?.dataTime
     }
 }
