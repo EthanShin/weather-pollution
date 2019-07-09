@@ -15,8 +15,8 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.example.weatherpollution.Data.Item
 import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.MsrstnData
 import com.example.weatherpollution.Data.WeatherData
-import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -133,13 +133,15 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                 y = y,
                 returnType = "json"
             )
-            ?.enqueue(object: Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+            ?.enqueue(object: Callback<MsrstnData> {
+                override fun onFailure(call: Call<MsrstnData>, t: Throwable) {
                     Log.d("test_request", "response_fail: $t")
                 }
 
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    Log.d("test_request", "msrstn body: " + response.body())
+                override fun onResponse(call: Call<MsrstnData>, response: Response<MsrstnData>) {
+                    var msrstnData = response.body() // Parser 사용
+                    var list = msrstnData?.list
+                    Log.d("test_request", "ms body: " + list?.get(0)?.stationName)
                 }
             })
     }

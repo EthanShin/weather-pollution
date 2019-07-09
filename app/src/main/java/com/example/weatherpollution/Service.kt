@@ -1,8 +1,8 @@
 package com.example.weatherpollution
 
 import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.MsrstnData
 import com.example.weatherpollution.Data.WeatherData
-import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -49,5 +49,5 @@ interface Service {
         @Query("tmX") x: String,
         @Query("tmY") y: String,
         @Query("_returnType") returnType: String
-    ): Call<JsonObject>
+    ): Call<MsrstnData>
 }
