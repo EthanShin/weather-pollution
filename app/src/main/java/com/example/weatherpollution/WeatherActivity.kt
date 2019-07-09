@@ -13,11 +13,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import com.example.weatherpollution.Data.Item
-import com.example.weatherpollution.Data.LocationData
-import com.example.weatherpollution.Data.MsrstnData
-import com.example.weatherpollution.Data.WeatherData
-import com.google.gson.JsonObject
+import com.example.weatherpollution.Data.*
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -162,13 +158,15 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                 returnType = "json",
                 version = "1.3"
             )
-            ?.enqueue(object: Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+            ?.enqueue(object: Callback<DustData> {
+                override fun onFailure(call: Call<DustData>, t: Throwable) {
                     Log.d("test_request", "response_fail: $t")
                 }
 
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    Log.d("test_request", "dust body: " + response.body())
+                override fun onResponse(call: Call<DustData>, response: Response<DustData>) {
+                    var dustData = response.body() // Parser 사용
+                    var list = dustData?.list
+                    Log.d("test_request", "dust body: " + list?.get(0)?.dataTime)
                 }
             })
     }
