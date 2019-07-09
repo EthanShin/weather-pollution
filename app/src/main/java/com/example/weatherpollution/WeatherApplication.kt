@@ -48,7 +48,8 @@ class WeatherApplication : Application() {
     fun requestService(serviceNumber: Int): Service? {
         return when(serviceNumber) {
             0 -> weatherService
-            else -> tmService
+            1 -> tmService
+            else -> dustService
         }
     }
 }

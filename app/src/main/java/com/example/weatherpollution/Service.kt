@@ -46,7 +46,8 @@ interface Service {
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getNearbyMsrstnList")
     fun getMsrstnList(
         @Query("ServiceKey") serviceKey: String,
-        @Query("tmX") x: Double,
-        @Query("tmY") y: Double
+        @Query("tmX") x: String,
+        @Query("tmY") y: String,
+        @Query("_returnType") returnType: String
     ): Call<JsonObject>
 }

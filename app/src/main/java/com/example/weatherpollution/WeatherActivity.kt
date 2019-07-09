@@ -16,6 +16,7 @@ import android.util.Log
 import com.example.weatherpollution.Data.Item
 import com.example.weatherpollution.Data.LocationData
 import com.example.weatherpollution.Data.WeatherData
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -113,6 +114,32 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var locationData = response.body() // Parser 사용
                     var documents = locationData?.documents
                     Log.d("test_request", "tm body: " + documents?.get(0)?.x)
+                    Log.d("test_request", "tm body: " + documents?.get(0)?.y)
+
+                    if (documents != null) {
+                        requestMsrstnList(documents?.get(0)?.x.toString(), documents?.get(0)?.y.toString())
+                    }
+                }
+            })
+    }
+
+    // 가장 가까운 미세먼지 측정소의 목록을 요청하는 함수
+    private fun requestMsrstnList(x: String, y: String) {
+        (application as WeatherApplication)
+            .requestService(2)
+            ?.getMsrstnList(
+                serviceKey = BuildConfig.SERVICE_KEY,
+                x = x,
+                y = y,
+                returnType = "json"
+            )
+            ?.enqueue(object: Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    Log.d("test_request", "msrstn body: " + response.body())
                 }
             })
     }
