@@ -202,7 +202,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         (application as WeatherApplication)
             .requestService(0)
             ?.getWeatherInfoOfLocation(
-                serviceKey = getString(R.string.SERVICE_KEY),
+                serviceKey = BuildConfig.SERVICE_KEY,
                 baseDate = baseDate,
                 baseTime = baseTime,
                 nx = x,
@@ -240,7 +240,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         (application as WeatherApplication)
             .requestService(0)
             ?.get3hoursWeatherInfoOfLocation(
-                serviceKey = getString(R.string.SERVICE_KEY),
+                serviceKey = BuildConfig.SERVICE_KEY,
                 baseDate = baseDate,
                 baseTime = baseTime,
                 nx = x,
