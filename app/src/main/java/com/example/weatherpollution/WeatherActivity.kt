@@ -167,6 +167,10 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var dustData = response.body() // Parser 사용
                     var list = dustData?.list
                     Log.d("test_request", "dust body: " + list?.get(0)?.dataTime)
+
+                    if (list != null) {
+                        drawDust(list)
+                    }
                 }
             })
     }
@@ -359,5 +363,10 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
             text_weather.text = sky
         }
+    }
+
+    // 미세먼지 정보를 획득한 값을 화면에 보여줌
+    private fun drawDust(dust: ArrayList<DustList>) {
+        text_dust.text = "미세먼지" + dust[0]?.pm10Value + "\n초미세먼지" + dust[0]?.pm25Value + "\n" + dust[0]?.dataTime
     }
 }
