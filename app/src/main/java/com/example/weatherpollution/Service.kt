@@ -1,7 +1,10 @@
 package com.example.weatherpollution
 
+import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.WeatherData
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface Service {
@@ -29,4 +32,14 @@ interface Service {
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String
     ): Call<WeatherData>
+
+
+    @Headers("Authorization: KakaoAK ****")
+    @GET("/v2/local/geo/transcoord.json")
+    fun getTMlocation(
+        @Query("x") x: Double,
+        @Query("y") y: Double,
+        @Query("output_coord") outputCoord: String
+    ): Call<LocationData>
+
 }

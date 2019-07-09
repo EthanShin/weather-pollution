@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.example.weatherpollution.Data.Item
+import com.example.weatherpollution.Data.LocationData
+import com.example.weatherpollution.Data.WeatherData
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,6 +55,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
                 Log.d("test_location", "1 lat = $latitude, lon = $longitude")
                 changeLocationTypeToXY(latitude, longitude)
+                changeLocationTypeToTM(latitude, longitude)
             } else {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -79,6 +83,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
         Log.d("test_location", "2 lat = $latitude, lon = $longitude")
         if (latitude != null && longitude != null) {
             changeLocationTypeToXY(latitude, longitude)
+            changeLocationTypeToTM(latitude, longitude)
         }
     }
 
@@ -89,6 +94,27 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
     }
 
     override fun onProviderDisabled(provider: String?) {
+    }
+
+    private fun changeLocationTypeToTM(lat: Double, lon: Double) {
+        (application as WeatherApplication)
+            .requestService(1)
+            ?.getTMlocation(
+                x = lon,
+                y = lat,
+                outputCoord = "TM"
+            )
+            ?.enqueue(object: Callback<LocationData> {
+                override fun onFailure(call: Call<LocationData>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<LocationData>, response: Response<LocationData>) {
+                    var locationData = response.body() // Parser 사용
+                    var documents = locationData?.documents
+                    Log.d("test_request", "tm body: " + documents?.get(0)?.x)
+                }
+            })
     }
 
     // 위도, 경도 값을 API 서버가 요구하는 X, Y 좌표로 변경
@@ -135,31 +161,46 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
 
     // 날짜와 시간을 API 서버가 요구하는 형태로 변경
     data class TimeResult(val date: String, val time: String)
-    private fun getBaseTime(date: LocalDateTime): TimeResult {
+    private fun getBaseTime(date: LocalDateTime, number: Int): TimeResult {
 
         var checkDate = date
+        val h = date.hour
+        if (number == 0) {
+            val m = date.minute
+            if (h % 2 == 1 && m < 20) {
+                checkDate = checkDate.withHour(h - 1)
+                checkDate = checkDate.withMinute(40)
+            }
 
-        val h = date.hour   // 공공데이터포털의 데이터가 2시를 기준으로 날짜가 변경됨
-        if (h < 2) {
-            checkDate = checkDate.minusDays(1)  // 2시가 되지 않았다면 전날 23시로 날짜 보정
-            checkDate = checkDate.withHour(23)
+            return TimeResult(
+                checkDate.format(DateTimeFormatter.BASIC_ISO_DATE),
+                checkDate.format(DateTimeFormatter.ofPattern("HHmm"))
+            )
+
         } else {
-            checkDate = checkDate.withHour(h - (h + 1) % 3) // 3시간 간격으로 기준시간이 변경됨
-        }
+            if (h < 2) { // 공공데이터포털의 데이터가 2시를 기준으로 날짜가 변경됨
+                checkDate = checkDate.minusDays(1)  // 2시가 되지 않았다면 전날 23시로 날짜 보정
+                checkDate = checkDate.withHour(23)
+            } else {
+                checkDate = checkDate.withHour(h - (h + 1) % 3) // 3시간 간격으로 기준시간이 변경됨
+            }
 
-        return TimeResult(checkDate.format(DateTimeFormatter.BASIC_ISO_DATE), checkDate.format(DateTimeFormatter.ofPattern("HHmm")))
+            return TimeResult(
+                checkDate.format(DateTimeFormatter.BASIC_ISO_DATE),
+                checkDate.format(DateTimeFormatter.ofPattern("HHmm"))
+            )
+        }
     }
 
     // 초단기실황
     private fun requestWeatherInfoOfLocation(x: Int, y: Int) {
         val date = LocalDateTime.now()  // 현재시간
-        val baseDate = date.format(DateTimeFormatter.BASIC_ISO_DATE)
-        val baseTime = date.format(DateTimeFormatter.ofPattern("HHmm"))
+        val (baseDate, baseTime) = getBaseTime(date, 0) // 날짜와 시간분리 ex)20190707, 0500
 
         Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
 
         (application as WeatherApplication)
-            .requestService()
+            .requestService(0)
             ?.getWeatherInfoOfLocation(
                 serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
@@ -172,7 +213,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
             )
             ?.enqueue(object: Callback<WeatherData> {
                 override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                    Log.d("test_request", "response_fail: $t")
+                    Log.d("test_request", "1 response_fail: $t")
                 }
 
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -192,12 +233,12 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
     private fun request3hoursWeatherInfoOfLocation(x: Int, y: Int) {
 
         val date = LocalDateTime.now()  // 현재시간
-        val (baseDate, baseTime) = getBaseTime(date) // 날짜와 시간분리 ex)20190707, 0500
+        val (baseDate, baseTime) = getBaseTime(date, 1) // 날짜와 시간분리 ex)20190707, 0500
 
         Log.d("test_baseTime", "date: $baseDate, time: $baseTime")
 
         (application as WeatherApplication)
-            .requestService()
+            .requestService(0)
             ?.get3hoursWeatherInfoOfLocation(
                 serviceKey = getString(R.string.SERVICE_KEY),
                 baseDate = baseDate,
@@ -210,7 +251,7 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
             )
             ?.enqueue(object: Callback<WeatherData> {
                 override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                    Log.d("test_request", "response_fail: $t")
+                    Log.d("test_request", "2 response_fail: $t")
                 }
 
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {

@@ -1,4 +1,4 @@
-package com.example.weatherpollution
+package com.example.weatherpollution.Data
 
 import java.io.Serializable
 
