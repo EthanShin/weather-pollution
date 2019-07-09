@@ -17,6 +17,7 @@ import com.example.weatherpollution.Data.Item
 import com.example.weatherpollution.Data.LocationData
 import com.example.weatherpollution.Data.MsrstnData
 import com.example.weatherpollution.Data.WeatherData
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_weather.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -142,6 +143,32 @@ class WeatherActivity : AppCompatActivity(), LocationListener {
                     var msrstnData = response.body() // Parser 사용
                     var list = msrstnData?.list
                     Log.d("test_request", "ms body: " + list?.get(0)?.stationName)
+
+                    if (list != null) {
+                        requestDustInfo(list?.get(0)?.stationName.toString())
+                    }
+                }
+            })
+    }
+
+    // 미세먼지 정보를 요청하는 함수
+    private fun requestDustInfo(station: String) {
+        (application as WeatherApplication)
+            .requestService(2)
+            ?.getDustInfo(
+                serviceKey = BuildConfig.SERVICE_KEY,
+                station = station,
+                dataTerm = "DAILY",
+                returnType = "json",
+                version = "1.3"
+            )
+            ?.enqueue(object: Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.d("test_request", "response_fail: $t")
+                }
+
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    Log.d("test_request", "dust body: " + response.body())
                 }
             })
     }
