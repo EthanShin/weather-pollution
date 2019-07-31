@@ -21,10 +21,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
+
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             super.onLocationResult(p0)
-            Log.d("TEST", "2: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
+            Log.d("TEST", "1: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
+
+            if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
+                locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
+            }
 
             locationManager.stopLocationUpdates()
         }
