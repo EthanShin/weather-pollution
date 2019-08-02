@@ -1,4 +1,4 @@
-package com.example.weatherpollution
+package com.example.weatherpollution.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,6 +10,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
+import com.example.weatherpollution.LocationManager
+import com.example.weatherpollution.R
+import com.example.weatherpollution.viewModel.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -41,6 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationManager = LocationManager(fusedLocationProviderClient, locationCallback)
+
+        val viewModel = ViewModelProviders.of(this)[MainViewModel::class.java]
 
         checkPermissions()
     }
