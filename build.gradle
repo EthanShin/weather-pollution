@@ -26,3 +26,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    locationVersion = '17.0.0'
+    lifecycleVersion = '2.2.0-alpha02'
+    koinVersion = '2.0.1'
+}
