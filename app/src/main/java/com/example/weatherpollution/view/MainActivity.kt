@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
+            mainViewModel.test()
             locationManager.stopLocationUpdates()
         }
     }
