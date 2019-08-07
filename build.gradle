@@ -32,4 +32,6 @@ ext {
     lifecycleVersion = '2.2.0-alpha02'
     koinVersion = '2.0.1'
     retrofitVersion = '2.6.1'
+    rxjavaVersion = '2.2.10'
+    rxandroidVersion = '2.1.1'
 }
