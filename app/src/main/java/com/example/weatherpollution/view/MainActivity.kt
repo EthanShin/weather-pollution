@@ -33,11 +33,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST", "1: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
-                locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
-
+                val(nx, ny) = locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
+                mainViewModel.test(nx, ny)
             }
 
-            mainViewModel.test()
             locationManager.stopLocationUpdates()
         }
     }

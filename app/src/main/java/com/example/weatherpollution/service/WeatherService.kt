@@ -1,6 +1,6 @@
 package com.example.weatherpollution.service
 
-import com.example.weatherpollution.data.Weather
+import com.example.weatherpollution.data.WeatherData
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +17,5 @@ interface WeatherService {
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String
-    ): Single<Weather>
+    ): Single<WeatherData>
 }

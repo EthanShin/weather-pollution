@@ -28,7 +28,8 @@ class LocationManager(
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
-    fun changeLocationType(lat: Double, lon: Double) {
+    data class LocationResult(val lat: Int, val lon: Int)
+    fun changeLocationType(lat: Double, lon: Double): LocationResult {
         val Re = 6371.00877
         val grid = 5.0
         val Slat1 = 30.0
@@ -61,9 +62,11 @@ class LocationManager(
         if (theta < -PI) theta += 2.0 * PI
         theta *= sn
 
-        var x = (ra * sin(theta) + xo + 1.5).toInt()
-        var y = (ro - ra * cos(theta) + yo + 1.5).toInt()
+        val x = (ra * sin(theta) + xo + 1.5).toInt()
+        val y = (ro - ra * cos(theta) + yo + 1.5).toInt()
 
         Log.d("test_location", "2 x = $x, y = $y")
+
+        return LocationResult(x, y)
     }
 }

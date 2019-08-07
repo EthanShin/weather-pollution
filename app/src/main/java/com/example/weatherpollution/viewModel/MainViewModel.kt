@@ -3,16 +3,16 @@ package com.example.weatherpollution.viewModel
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.weatherpollution.BuildConfig.SERVICE_KEY
-import com.example.weatherpollution.service.WeatherService
+import com.example.weatherpollution.model.WeatherDataModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MainViewModel(private val service: WeatherService) : ViewModel() {
+class MainViewModel(private val model: WeatherDataModel) : ViewModel() {
 
     @SuppressLint("CheckResult")
-    fun test() {
-        service.getWeatherInfoOfLocation(serviceKey = SERVICE_KEY, nx = 59, ny = 125, baseDate = "20190806", baseTime = "1100", numOfRows = 10, pageNo = 1, type = "json")
+    fun test(nx: Int, ny: Int) {
+        CompositeDisposable().add(model.getData(nx = nx, ny = ny)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -20,5 +20,6 @@ class MainViewModel(private val service: WeatherService) : ViewModel() {
             }, {
                 Log.d("TEST", "Error message: ${it.message}")
             })
+        )
     }
 }

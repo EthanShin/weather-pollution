@@ -2,7 +2,7 @@ package com.example.weatherpollution.data
 
 import java.io.Serializable
 
-data class Weather(
+data class WeatherData(
     var response: Response? = null
 ): Serializable
 

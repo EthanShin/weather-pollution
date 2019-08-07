@@ -1,5 +1,7 @@
 package com.example.weatherpollution.di
 
+import com.example.weatherpollution.model.WeatherDataModel
+import com.example.weatherpollution.model.WeatherDataModelImpl
 import com.example.weatherpollution.service.WeatherService
 import com.example.weatherpollution.viewModel.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,4 +27,10 @@ val retrofitModule = module {
     }
 }
 
-val appModule = listOf(viewModelModule, retrofitModule)
+var modelModule = module {
+    factory<WeatherDataModel> {
+        WeatherDataModelImpl(get())
+    }
+}
+
+val appModule = listOf(viewModelModule, retrofitModule, modelModule)
