@@ -1,5 +1,6 @@
 package com.example.weatherpollution.model
 
+import android.util.Log
 import com.example.weatherpollution.BuildConfig.SERVICE_KEY
 import com.example.weatherpollution.data.WeatherData
 import com.example.weatherpollution.service.WeatherService
@@ -11,6 +12,8 @@ class WeatherDataModelImpl(private val service: WeatherService) : WeatherDataMod
 
     override fun getData(nx: Int, ny: Int): Single<WeatherData> {
         val (baseDate, baseTime) = getBaseTime(LocalDateTime.now())
+        Log.d("TEST", "baseDate & Time : $baseDate, $baseTime")
+
         return service.getWeatherInfoOfLocation(serviceKey = SERVICE_KEY, nx = nx, ny = ny, baseDate = baseDate, baseTime = baseTime, numOfRows = 10, pageNo = 1, type = "json")
     }
 
@@ -21,9 +24,13 @@ class WeatherDataModelImpl(private val service: WeatherService) : WeatherDataMod
         val h = date.hour
         val m = date.minute
 
-        if (h % 2 == 1 && m < 20) {
-            checkDate = checkDate.withHour(h - 1)
-            checkDate = checkDate.withMinute(40)
+        if (m <= 20) {
+            checkDate = if (h == 0) {
+                checkDate.minusDays(1)
+                    .also { checkDate.withHour(23) }
+            } else {
+                checkDate.withHour(h - 1)
+            }
         }
 
         return TimeResult(

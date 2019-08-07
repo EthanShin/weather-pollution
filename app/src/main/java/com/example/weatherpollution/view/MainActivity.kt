@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.weatherpollution.LocationManager
 import com.example.weatherpollution.R
+import com.example.weatherpollution.base.BaseActivity
 import com.example.weatherpollution.viewModel.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -21,11 +22,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MY_PERMISSION_ACCESS_FINE_LOCATION = 1
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<MainViewModel>() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    val mainViewModel: MainViewModel by viewModel()
+    override val viewModel: MainViewModel by viewModel()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
                 val(nx, ny) = locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
-                mainViewModel.test(nx, ny)
+                viewModel.test(nx, ny)
             }
 
             locationManager.stopLocationUpdates()
