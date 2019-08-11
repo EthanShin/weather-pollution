@@ -4,29 +4,34 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.example.weatherpollution.LocationManager
 import com.example.weatherpollution.R
 import com.example.weatherpollution.base.BaseActivity
+import com.example.weatherpollution.databinding.ActivityMainBinding
 import com.example.weatherpollution.viewModel.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MY_PERMISSION_ACCESS_FINE_LOCATION = 1
 
-class MainActivity : BaseActivity<MainViewModel>() {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+
+    override val layoutResourceId: Int
+        get() = R.layout.activity_main
+
+    override val viewModel: MainViewModel by viewModel()
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    override val viewModel: MainViewModel by viewModel()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
@@ -35,21 +40,29 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
                 val(nx, ny) = locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
-                viewModel.test(nx, ny)
+                viewModel.getWeather(nx, ny)
             }
 
             locationManager.stopLocationUpdates()
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+    override fun initStartView() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationManager = LocationManager(fusedLocationProviderClient, locationCallback)
 
         checkPermissions()
+    }
+
+    override fun initDataBinding() {
+        viewModel.weatherLiveData.observe(this, Observer {
+
+            textView.text = it.response?.body?.items?.item?.get(0)?.baseDate
+        })
+    }
+
+    override fun initAfterBinding() {
+
     }
 
     @SuppressLint("ObsoleteSdkInt")

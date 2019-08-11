@@ -24,7 +24,7 @@ class WeatherDataModelImpl(private val service: WeatherService) : WeatherDataMod
         val h = date.hour
         val m = date.minute
 
-        if (m <= 20) {
+        if (m < 40) {
             checkDate = if (h == 0) {
                 checkDate.minusDays(1)
                     .also { checkDate.withHour(23) }
