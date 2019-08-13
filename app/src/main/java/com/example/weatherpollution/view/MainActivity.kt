@@ -30,7 +30,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     override val viewModel: MainViewModel by viewModel()
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationManager: LocationManager
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
@@ -40,19 +39,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
                 viewModel.getWeather(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
-
-            locationManager.stopLocationUpdates()
         }
     }
 
     override fun initStartView() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        locationManager = LocationManager(fusedLocationProviderClient, locationCallback)
-
         checkPermissions()
     }
 
     override fun initDataBinding() {
+        LocationManager(this, fusedLocationProviderClient, locationCallback)
+
         viewModel.weatherLiveData.observe(this, Observer {
             viewDataBinding.textView.text = it.main?.temp.toString()
         })
@@ -71,8 +68,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
                     MY_PERMISSION_ACCESS_FINE_LOCATION)
         } else {
             Toast.makeText(this, "Permission has already been granted", Toast.LENGTH_LONG).show()
-
-            getLastLocation()
         }
     }
 
@@ -84,16 +79,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         if (requestCode == MY_PERMISSION_ACCESS_FINE_LOCATION) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this, "Permission was granted", Toast.LENGTH_LONG).show()
-
-                getLastLocation()
             } else {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-        locationManager.startLocationUpdates()
     }
 }
