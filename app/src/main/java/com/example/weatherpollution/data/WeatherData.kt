@@ -1,34 +1,25 @@
 package com.example.weatherpollution.data
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class WeatherData(
-    var response: Response? = null
+    var main: Main? = null,
+    var weatherList: ArrayList<Weather>? = null
 ): Serializable
 
-class Response(
-    var header: Header? = null,
-    var body: Body? = null
+class Weather(
+    var description: String? = null,
+    var icon: String? = null,
+    var main: String? = null
 ): Serializable
 
-class Header(
-    var resultCode: String? = null,
-    var resultMsg: String? = null
-): Serializable
-
-class Body(
-    var items: Items? = null
-): Serializable
-
-class Items(
-    var item: ArrayList<Item>? = null
-): Serializable
-
-class Item(
-    var baseDate: String? = null,
-    var baseTime: String? = null,
-    var category: String? = null,
-    var obsrValue: String? = null,
-    var nx: String? = null,
-    var ny: String? = null
+class Main(
+    var humidity: String? = null,
+    var pressure: String? = null,
+    var temp: Float? = null,
+    @SerializedName("temp_min")
+    var tempMin: Float? = null,
+    @SerializedName("temp_max")
+    var tempMax: Float? = null
 ): Serializable

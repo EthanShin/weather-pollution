@@ -7,15 +7,11 @@ import retrofit2.http.Query
 
 interface WeatherService {
 
-    @GET("/service/SecndSrtpdFrcstInfoService2/ForecastGrib")
+    @GET("/data/2.5/weather")
     fun getWeatherInfoOfLocation(
-        @Query("ServiceKey") serviceKey: String,
-        @Query("base_date") baseDate: String,
-        @Query("base_time") baseTime: String,
-        @Query("nx") nx: Int,
-        @Query("ny") ny: Int,
-        @Query("numOfRows") numOfRows: Int,
-        @Query("pageNo") pageNo: Int,
-        @Query("_type") type: String
+        @Query("APPID") serviceKey: String,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("units") units: String = "metric"
     ): Single<WeatherData>
 }

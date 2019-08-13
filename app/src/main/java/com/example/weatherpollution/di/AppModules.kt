@@ -19,7 +19,7 @@ val viewModelModule = module {
 val retrofitModule = module {
     single<WeatherService> {
         Retrofit.Builder()
-            .baseUrl("http://newsky2.kma.go.kr/")
+            .baseUrl("https://api.openweathermap.org/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

@@ -18,13 +18,13 @@ class MainViewModel(private val model: WeatherDataModel) : BaseViewModel() {
         get() = _weatherLiveData
 
     @SuppressLint("CheckResult")
-    fun getWeather(nx: Int, ny: Int) {
-        CompositeDisposable().add(model.getData(nx = nx, ny = ny)
+    fun getWeather(x: Double, y: Double) {
+        CompositeDisposable().add(model.getData(x = x, y = y)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.d("TEST", "success: ${it.response?.body?.items?.item?.get(0)?.baseDate}")
                 _weatherLiveData.postValue(it)
+
 
             }, {
                 Log.d("TEST", "Error message: ${it.message}")

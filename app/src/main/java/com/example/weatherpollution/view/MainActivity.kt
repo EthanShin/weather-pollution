@@ -18,7 +18,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MY_PERMISSION_ACCESS_FINE_LOCATION = 1
@@ -36,11 +35,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             super.onLocationResult(p0)
-            Log.d("TEST", "1: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
+            Log.d("TEST", "location: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
-                val(nx, ny) = locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
-                viewModel.getWeather(nx, ny)
+                viewModel.getWeather(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
 
             locationManager.stopLocationUpdates()
@@ -56,8 +54,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun initDataBinding() {
         viewModel.weatherLiveData.observe(this, Observer {
-
-            textView.text = it.response?.body?.items?.item?.get(0)?.baseDate
+            viewDataBinding.textView.text = it.main?.temp.toString()
         })
     }
 
