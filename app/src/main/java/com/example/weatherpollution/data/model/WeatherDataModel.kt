@@ -1,6 +1,6 @@
-package com.example.weatherpollution.model
+package com.example.weatherpollution.data.model
 
-import com.example.weatherpollution.data.WeatherData
+import com.example.weatherpollution.data.remote.WeatherData
 import io.reactivex.Single
 
 interface WeatherDataModel {

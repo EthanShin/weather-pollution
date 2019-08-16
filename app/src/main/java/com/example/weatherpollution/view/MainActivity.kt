@@ -51,7 +51,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         LocationManager(this, fusedLocationProviderClient, locationCallback)
 
         viewModel.weatherLiveData.observe(this, Observer {
-            viewDataBinding.textView.text = it.main?.temp.toString()
+            Log.d("TEST", "db: ${it.temp}, ${it.humidity}, ${it.main}")
+            viewDataBinding.textView.text = it.temp.toString()
         })
     }
 

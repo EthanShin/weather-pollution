@@ -1,8 +1,11 @@
 package com.example.weatherpollution.di
 
-import com.example.weatherpollution.model.WeatherDataModel
-import com.example.weatherpollution.model.WeatherDataModelImpl
-import com.example.weatherpollution.service.WeatherService
+import androidx.room.Room
+import com.example.weatherpollution.data.db.CurrentWeatherDatabase
+import com.example.weatherpollution.data.db.CurrentWeatherRepository
+import com.example.weatherpollution.data.model.WeatherDataModel
+import com.example.weatherpollution.data.model.WeatherDataModelImpl
+import com.example.weatherpollution.data.WeatherService
 import com.example.weatherpollution.viewModel.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -12,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val viewModelModule = module {
     viewModel {
-        MainViewModel(get())
+        MainViewModel(get(), get())
     }
 }
 
@@ -27,10 +30,29 @@ val retrofitModule = module {
     }
 }
 
-var modelModule = module {
+val modelModule = module {
     factory<WeatherDataModel> {
         WeatherDataModelImpl(get())
     }
 }
 
-val appModule = listOf(viewModelModule, retrofitModule, modelModule)
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(get(), CurrentWeatherDatabase::class.java, "weather_database").build()
+    }
+}
+
+val daoModule = module {
+    single {
+        get<CurrentWeatherDatabase>().currentWeatherDao()
+    }
+}
+
+val repositoryModule = module {
+    single {
+        CurrentWeatherRepository(get())
+    }
+}
+
+
+val appModule = listOf(viewModelModule, retrofitModule, modelModule, databaseModule, daoModule, repositoryModule)

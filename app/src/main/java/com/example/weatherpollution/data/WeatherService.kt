@@ -1,6 +1,6 @@
-package com.example.weatherpollution.service
+package com.example.weatherpollution.data
 
-import com.example.weatherpollution.data.WeatherData
+import com.example.weatherpollution.data.remote.WeatherData
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
