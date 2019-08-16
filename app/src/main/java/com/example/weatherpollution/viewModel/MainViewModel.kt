@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 class MainViewModel(
     private val model: APIManager,
@@ -44,14 +45,19 @@ class MainViewModel(
         )
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "SimpleDateFormat")
     fun getForecast(x: Double, y: Double) {
         addDisposable(model.getForecastData(x = x, y = y)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
-                Log.d("TEST", "${it.ForecastList?.get(0)?.dateTime}")
+                val dateTime = it.ForecastList?.get(0)?.dateTime?.times(1000)
+
+                dateTime?.let {
+                    Log.d("TEST", SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(dateTime))
+
+                }
 
             }, {
                 Log.d("TEST", "Error message: ${it.message}")

@@ -1,6 +1,6 @@
 package com.example.weatherpollution.data
 
-import com.example.weatherpollution.data.remote.ForecastData
+import com.example.weatherpollution.data.remote.ForecastResponse
 import com.example.weatherpollution.data.remote.WeatherData
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -23,5 +23,5 @@ interface RetrofitAPI {
         @Query("lon") lon: Double,
         @Query("units") units: String = "metric",
         @Query("cnt") cnt: Int = 8
-    ): Single<ForecastData>
+    ): Single<ForecastResponse>
 }
