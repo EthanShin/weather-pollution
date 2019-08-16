@@ -8,7 +8,7 @@ import com.example.weatherpollution.base.BaseViewModel
 import com.example.weatherpollution.data.remote.WeatherData
 import com.example.weatherpollution.data.db.CurrentWeather
 import com.example.weatherpollution.data.db.CurrentWeatherRepository
-import com.example.weatherpollution.data.model.WeatherDataModel
+import com.example.weatherpollution.data.model.APIManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val model: WeatherDataModel,
+    private val model: APIManager,
     private val repository: CurrentWeatherRepository
 ) : BaseViewModel() {
 
@@ -24,14 +24,34 @@ class MainViewModel(
     val weatherLiveData: LiveData<CurrentWeather>
         get() = _weatherLiveData
 
+    fun getData(x: Double, y: Double) {
+        getWeather(x, y)
+        getForecast(x, y)
+    }
+
     @SuppressLint("CheckResult")
     fun getWeather(x: Double, y: Double) {
-        addDisposable(model.getData(x = x, y = y)
+        addDisposable(model.getWeatherData(x = x, y = y)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
                 insertWeather(it)
+
+            }, {
+                Log.d("TEST", "Error message: ${it.message}")
+            })
+        )
+    }
+
+    @SuppressLint("CheckResult")
+    fun getForecast(x: Double, y: Double) {
+        addDisposable(model.getForecastData(x = x, y = y)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                Log.d("TEST", "${it.ForecastList?.get(0)?.dateTime}")
 
             }, {
                 Log.d("TEST", "Error message: ${it.message}")

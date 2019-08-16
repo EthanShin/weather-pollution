@@ -37,7 +37,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             Log.d("TEST", "location: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
-                viewModel.getWeather(p0.lastLocation.latitude, p0.lastLocation.longitude)
+                viewModel.getData(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
         }
     }
