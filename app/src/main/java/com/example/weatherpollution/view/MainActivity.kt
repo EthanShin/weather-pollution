@@ -4,14 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.example.weatherpollution.LocationManager
 import com.example.weatherpollution.R
+import com.example.weatherpollution.base.BaseActivity
+import com.example.weatherpollution.databinding.ActivityMainBinding
 import com.example.weatherpollution.viewModel.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -21,34 +22,42 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MY_PERMISSION_ACCESS_FINE_LOCATION = 1
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+
+    override val layoutResourceId: Int
+        get() = R.layout.activity_main
+
+    override val viewModel: MainViewModel by viewModel()
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationManager: LocationManager
-    val mainViewModel: MainViewModel by viewModel()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             super.onLocationResult(p0)
-            Log.d("TEST", "1: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
+            Log.d("TEST", "location: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
-                locationManager.changeLocationType(p0.lastLocation.latitude, p0.lastLocation.longitude)
-
+                viewModel.getWeather(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
-
-            locationManager.stopLocationUpdates()
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+    override fun initStartView() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        locationManager = LocationManager(fusedLocationProviderClient, locationCallback)
-
         checkPermissions()
+    }
+
+    override fun initDataBinding() {
+        LocationManager(this, fusedLocationProviderClient, locationCallback)
+
+        viewModel.weatherLiveData.observe(this, Observer {
+            Log.d("TEST", "db: ${it.temp}, ${it.humidity}, ${it.main}")
+            viewDataBinding.textView.text = it.temp.toString()
+        })
+    }
+
+    override fun initAfterBinding() {
+
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -60,8 +69,6 @@ class MainActivity : AppCompatActivity() {
                     MY_PERMISSION_ACCESS_FINE_LOCATION)
         } else {
             Toast.makeText(this, "Permission has already been granted", Toast.LENGTH_LONG).show()
-
-            getLastLocation()
         }
     }
 
@@ -73,16 +80,9 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == MY_PERMISSION_ACCESS_FINE_LOCATION) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this, "Permission was granted", Toast.LENGTH_LONG).show()
-
-                getLastLocation()
             } else {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-        locationManager.startLocationUpdates()
     }
 }
