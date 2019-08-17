@@ -5,25 +5,32 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weatherpollution.base.BaseViewModel
-import com.example.weatherpollution.data.remote.WeatherData
+import com.example.weatherpollution.data.remote.WeatherResponse
 import com.example.weatherpollution.data.db.CurrentWeather
 import com.example.weatherpollution.data.db.CurrentWeatherRepository
+import com.example.weatherpollution.data.db.Forecast
+import com.example.weatherpollution.data.db.ForecastRepository
 import com.example.weatherpollution.data.model.APIManager
+import com.example.weatherpollution.data.remote.ForecastResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 class MainViewModel(
     private val model: APIManager,
-    private val repository: CurrentWeatherRepository
+    private val weatherRepository: CurrentWeatherRepository,
+    private val forecastRepository: ForecastRepository
 ) : BaseViewModel() {
 
     private val _weatherLiveData = MutableLiveData<CurrentWeather>()
     val weatherLiveData: LiveData<CurrentWeather>
         get() = _weatherLiveData
+
+    private val _forecastLiveData = MutableLiveData<List<Forecast>>()
+    val forecastLiveData: LiveData<List<Forecast>>
+        get() = _forecastLiveData
 
     fun getData(x: Double, y: Double) {
         getWeather(x, y)
@@ -52,12 +59,7 @@ class MainViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
 
-                val dateTime = it.ForecastList?.get(0)?.dateTime?.times(1000)
-
-                dateTime?.let {
-                    Log.d("TEST", SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(dateTime))
-
-                }
+                insertForecast(it)
 
             }, {
                 Log.d("TEST", "Error message: ${it.message}")
@@ -65,9 +67,15 @@ class MainViewModel(
         )
     }
 
-    private fun insertWeather(it: WeatherData) = CoroutineScope(Dispatchers.IO).launch {
-        repository.deleteCurrentWeather()
-        repository.insertCurrentWeather(it.toWeatherDB())
-        _weatherLiveData.postValue(repository.getCurrentWeather())
+    private fun insertWeather(it: WeatherResponse) = CoroutineScope(Dispatchers.IO).launch {
+        weatherRepository.deleteCurrentWeather()
+        weatherRepository.insertCurrentWeather(it.toWeatherDB())
+        _weatherLiveData.postValue(weatherRepository.getCurrentWeather())
+    }
+
+    private fun insertForecast(it: ForecastResponse) = CoroutineScope(Dispatchers.IO).launch {
+        forecastRepository.deleteForecast()
+        forecastRepository.insertForecast(it.toForecastDB())
+        _forecastLiveData.postValue(forecastRepository.getForecast())
     }
 }

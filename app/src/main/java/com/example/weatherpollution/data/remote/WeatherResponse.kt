@@ -1,23 +1,26 @@
 package com.example.weatherpollution.data.remote
 
+import android.annotation.SuppressLint
 import com.example.weatherpollution.data.db.CurrentWeather
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+import java.text.SimpleDateFormat
 
-data class WeatherData(
+data class WeatherResponse(
     var main: MainResponse? = null,
     @SerializedName("weather")
-    var currentWeatherListResponseList: ArrayList<WeatherListResponse>? = null,
+    var currentWeatherList: ArrayList<WeatherListResponse>? = null,
     @SerializedName("dt")
     var dateTime: Long? = null
 ): Serializable {
 
+    @SuppressLint("SimpleDateFormat")
     fun toWeatherDB(): CurrentWeather {
         return CurrentWeather(
-            id = 0,
-            main = currentWeatherListResponseList?.getOrNull(0)?.main,
+            main = currentWeatherList?.getOrNull(0)?.main,
             temp = main?.temp,
-            humidity = main?.humidity
+            humidity = main?.humidity,
+            dateTime = SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(dateTime?.times(1000))
         )
     }
 }
