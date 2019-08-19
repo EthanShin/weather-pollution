@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.weatherpollution.LocationManager
 import com.example.weatherpollution.base.BaseViewModel
 import com.example.weatherpollution.data.remote.WeatherResponse
 import com.example.weatherpollution.data.db.CurrentWeather
@@ -77,5 +78,6 @@ class MainViewModel(
         forecastRepository.deleteForecast()
         forecastRepository.insertForecast(it.toForecastDB())
         _forecastLiveData.postValue(forecastRepository.getForecast())
+        Log.d("TEST3", forecastRepository.getRowCount().toString())
     }
 }

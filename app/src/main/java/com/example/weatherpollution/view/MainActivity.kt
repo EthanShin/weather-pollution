@@ -47,6 +47,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun initStartView() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         checkPermissions()
     }
 
@@ -64,7 +65,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         })
 
         viewModel.forecastLiveData.observe(this, Observer {
-
             adapter.setForecasts(it)
         })
     }

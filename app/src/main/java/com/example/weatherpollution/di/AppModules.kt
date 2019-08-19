@@ -8,7 +8,6 @@ import com.example.weatherpollution.data.model.APIManager
 import com.example.weatherpollution.data.model.APIManagerImpl
 import com.example.weatherpollution.data.RetrofitAPI
 import com.example.weatherpollution.viewModel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

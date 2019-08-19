@@ -22,14 +22,14 @@ class ForecastListAdapter internal constructor(
         val dateView = itemView.textView6
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastListAdapter.ForecastViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
         val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
         return ForecastViewHolder(itemView)
     }
 
     override fun getItemCount() = forecast.size
 
-    override fun onBindViewHolder(holder: ForecastListAdapter.ForecastViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
         val current = forecast[position]
         holder.tempView.text = current.temp.toString()
         holder.humidityView.text = current.humidity.toString()

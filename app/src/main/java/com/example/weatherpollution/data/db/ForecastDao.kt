@@ -16,4 +16,7 @@ interface ForecastDao {
 
     @Query("DELETE FROM forecast_table")
     suspend fun deleteForecast()
+
+    @Query("SELECT COUNT(date_time) FROM forecast_table")
+    fun getRowCount(): Int
 }
