@@ -8,12 +8,12 @@ import androidx.room.Query
 @Dao
 interface CurrentWeatherDao {
 
-    @Query("SELECT * FROM current_weather")
+    @Query("SELECT * FROM weather_table")
     fun getCurrentWeather(): CurrentWeather
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCurrentWeather(weather: CurrentWeather)
+    suspend fun insertCurrentWeather(weather: CurrentWeather)
 
-    @Query("DELETE FROM current_weather")
-    fun deleteCurrentWeather()
+    @Query("DELETE FROM weather_table")
+    suspend fun deleteCurrentWeather()
 }

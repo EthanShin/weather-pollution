@@ -8,7 +8,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.example.weatherpollution.LocationManager
 import com.example.weatherpollution.R
 import com.example.weatherpollution.base.BaseActivity
@@ -37,23 +36,19 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             Log.d("TEST", "location: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
 
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
-                viewModel.getWeather(p0.lastLocation.latitude, p0.lastLocation.longitude)
+                viewModel.getData(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
         }
     }
 
     override fun initStartView() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         checkPermissions()
     }
 
     override fun initDataBinding() {
         LocationManager(this, fusedLocationProviderClient, locationCallback)
-
-        viewModel.weatherLiveData.observe(this, Observer {
-            Log.d("TEST", "db: ${it.temp}, ${it.humidity}, ${it.main}")
-            viewDataBinding.textView.text = it.temp.toString()
-        })
     }
 
     override fun initAfterBinding() {

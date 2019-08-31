@@ -20,9 +20,7 @@ class LocationManager(
     }
 
     private val locationRequest = LocationRequest().apply {
-            interval = 5000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

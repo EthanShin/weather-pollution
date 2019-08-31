@@ -6,11 +6,11 @@ class CurrentWeatherRepository(private val currentWeatherDao: CurrentWeatherDao)
         return currentWeatherDao.getCurrentWeather()
     }
 
-    fun insertCurrentWeather(weather: CurrentWeather) {
+    suspend fun insertCurrentWeather(weather: CurrentWeather) {
         currentWeatherDao.insertCurrentWeather(weather)
     }
 
-    fun deleteCurrentWeather() {
+    suspend fun deleteCurrentWeather() {
         currentWeatherDao.deleteCurrentWeather()
     }
 }
