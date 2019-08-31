@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "weather_table")
 data class CurrentWeather(
+    @PrimaryKey @ColumnInfo(name = "date_time") val dateTime: String = "",
+    @ColumnInfo(name = "icon") val icon: String?,
     @ColumnInfo(name = "main") val main: String?,
     @ColumnInfo(name = "temp") val temp: Double? = 0.0,
-    @ColumnInfo(name = "humidity") val humidity: Double? = 0.0,
-    @PrimaryKey @ColumnInfo(name = "date_time") val dateTime: String = ""
+    @ColumnInfo(name = "humidity") val humidity: Double? = 0.0
 )

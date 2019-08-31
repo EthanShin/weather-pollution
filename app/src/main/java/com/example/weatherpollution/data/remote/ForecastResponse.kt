@@ -16,12 +16,14 @@ data class ForecastResponse(
 
         var result = mutableListOf<Forecast>()
         for (i in 0 until (forecastList?.size ?: 0)) {
+            var value = forecastList?.getOrNull(i)
             result.add(
                 Forecast(
-                    main = forecastList?.getOrNull(i)?.weather?.getOrNull(0)?.main,
-                    temp = forecastList?.getOrNull(i)?.main?.temp,
-                    humidity = forecastList?.getOrNull(i)?.main?.humidity,
-                    dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(forecastList?.getOrNull(i)?.dateTime?.times(1000))
+                    icon = value?.weather?.getOrNull(0)?.icon,
+                    main = value?.weather?.getOrNull(0)?.main,
+                    temp = value?.main?.temp,
+                    humidity = value?.main?.humidity,
+                    dateTime = SimpleDateFormat("MM-dd HH:mm").format(value?.dateTime?.times(1000))
                 )
             )
         }

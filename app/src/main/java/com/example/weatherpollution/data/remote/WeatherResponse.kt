@@ -17,6 +17,7 @@ data class WeatherResponse(
     @SuppressLint("SimpleDateFormat")
     fun toWeatherDB(): CurrentWeather {
         return CurrentWeather(
+            icon = currentWeatherList?.getOrNull(0)?.icon,
             main = currentWeatherList?.getOrNull(0)?.main,
             temp = main?.temp,
             humidity = main?.humidity,
