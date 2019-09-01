@@ -13,10 +13,8 @@ import com.example.weatherpollution.R
 import com.example.weatherpollution.base.BaseActivity
 import com.example.weatherpollution.databinding.ActivityMainBinding
 import com.example.weatherpollution.viewModel.MainViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val MY_PERMISSION_ACCESS_FINE_LOCATION = 1
@@ -51,8 +49,12 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         LocationManager(this, fusedLocationProviderClient, locationCallback)
     }
 
+    @SuppressLint("MissingPermission")
     override fun initAfterBinding() {
-
+        fab_refresh.setOnClickListener {
+            viewModel.refresh()
+            fusedLocationProviderClient.requestLocationUpdates(LocationRequest().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY), locationCallback, null)
+        }
     }
 
     @SuppressLint("ObsoleteSdkInt")

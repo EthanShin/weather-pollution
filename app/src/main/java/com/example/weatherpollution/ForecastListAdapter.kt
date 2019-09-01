@@ -16,10 +16,10 @@ class ForecastListAdapter internal constructor(
     private var forecast = emptyList<Forecast>()
 
     inner class ForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tempView = itemView.textView3
-        val humidityView = itemView.textView4
-        val mainView = itemView.textView5
-        val dateView = itemView.textView6
+        val timeView = itemView.forecast_time
+        val imageView = itemView.forecast_icon
+        val tempView = itemView.forecast_temp
+        val humidityView = itemView.forecast_humidity
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -31,10 +31,10 @@ class ForecastListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
         val current = forecast[position]
+        holder.timeView.text = current.dateTime
+        holder.imageView.setImageResource(R.drawable.ic_cloud)
         holder.tempView.text = current.temp.toString()
         holder.humidityView.text = current.humidity.toString()
-        holder.mainView.text = current.main
-        holder.dateView.text = current.dateTime
     }
 
     internal fun setForecasts(forecast: List<Forecast>) {

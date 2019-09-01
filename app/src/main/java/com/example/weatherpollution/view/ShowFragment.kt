@@ -34,13 +34,13 @@ class ShowFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.weatherLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d("TEST", "main weather db: ${it.temp}, ${it.humidity}, ${it.main}, ${it.dateTime}")
+            Log.d("TEST", "main weather db: ${it?.temp}, ${it?.humidity}, ${it?.main}, ${it?.dateTime}")
 
-            val glide = Glide.with(this)
-            glide
-                .load(Uri.parse("http://openweathermap.org/img/w/" + it.icon + ".png"))
-                .override(current_icon.width, current_icon.height)
-                .into(current_icon)
+//            val glide = Glide.with(this)
+//            glide
+//                .load(Uri.parse("http://openweathermap.org/img/w/" + it.icon + ".png"))
+//                .override(current_icon.width, current_icon.height)
+//                .into(current_icon)
 
             viewDataBinding.weather = it
         })

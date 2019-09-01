@@ -5,6 +5,7 @@ import com.example.weatherpollution.data.db.Forecast
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.text.SimpleDateFormat
+import kotlin.math.round
 
 data class ForecastResponse(
     @SerializedName("list")
@@ -21,9 +22,9 @@ data class ForecastResponse(
                 Forecast(
                     icon = value?.weather?.getOrNull(0)?.icon,
                     main = value?.weather?.getOrNull(0)?.main,
-                    temp = value?.main?.temp,
-                    humidity = value?.main?.humidity,
-                    dateTime = SimpleDateFormat("MM-dd HH:mm").format(value?.dateTime?.times(1000))
+                    temp = value?.main?.temp?.let { round(it * 10) / 10 }.toString() + " \u2103",
+                    humidity = value?.main?.humidity?.toInt().toString() + " %",
+                    dateTime = SimpleDateFormat("MM-dd HH시").format(value?.dateTime?.times(1000))
                 )
             )
         }
