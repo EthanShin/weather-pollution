@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherpollution.data.db.Forecast
+import kotlinx.android.synthetic.main.fragment_show.*
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
 class ForecastListAdapter internal constructor(
@@ -16,10 +17,10 @@ class ForecastListAdapter internal constructor(
     private var forecast = emptyList<Forecast>()
 
     inner class ForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tempView = itemView.textView3
-        val humidityView = itemView.textView4
-        val mainView = itemView.textView5
-        val dateView = itemView.textView6
+        val timeView = itemView.forecast_time
+        val imageView = itemView.forecast_icon
+        val tempView = itemView.forecast_temp
+        val humidityView = itemView.forecast_humidity
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -30,11 +31,24 @@ class ForecastListAdapter internal constructor(
     override fun getItemCount() = forecast.size
 
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
-        val current = forecast[position]
-        holder.tempView.text = current.temp.toString()
-        holder.humidityView.text = current.humidity.toString()
-        holder.mainView.text = current.main
-        holder.dateView.text = current.dateTime
+        val forecast = forecast[position]
+        holder.timeView.text = forecast.dateTime
+        holder.imageView.setImageResource(selectImage(forecast.icon))
+        holder.tempView.text = forecast.temp.toString()
+        holder.humidityView.text = forecast.humidity.toString()
+    }
+
+    private fun selectImage(icon: String?): Int {
+        return when(icon) {
+            "01d" -> R.drawable.ic_sun
+            "01n" -> R.drawable.ic_moon
+            "02d", "02n", "03d", "03n", "04d", "04n" -> R.drawable.ic_cloud
+            "09d", "09n", "10d", "10n" -> R.drawable.ic_rain
+            "11d", "11n" -> R.drawable.ic_bolt
+            "13d", "13n" -> R.drawable.ic_snow
+            "50d", "50n" -> R.drawable.ic_mist
+            else -> 0
+        }
     }
 
     internal fun setForecasts(forecast: List<Forecast>) {

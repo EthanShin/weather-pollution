@@ -31,7 +31,7 @@ class ListFragment : Fragment() {
         val recyclerView = forecastRecyclerView
         val adapter = ForecastListAdapter(view.context)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         viewModel.forecastLiveData.observe(this, Observer {
             adapter.setForecasts(it)

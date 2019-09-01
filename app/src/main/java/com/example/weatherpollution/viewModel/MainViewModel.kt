@@ -79,4 +79,11 @@ class MainViewModel(
         forecastRepository.insertForecast(it.toForecastDB())
         _forecastLiveData.postValue(forecastRepository.getForecast())
     }
+
+    fun refresh() = CoroutineScope(Dispatchers.IO).launch {
+        weatherRepository.deleteCurrentWeather()
+        forecastRepository.deleteForecast()
+        _weatherLiveData.postValue(weatherRepository.getCurrentWeather())
+        _forecastLiveData.postValue(forecastRepository.getForecast())
+    }
 }
