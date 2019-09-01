@@ -4,9 +4,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/mtrl_card_spacing"
-        android:layout_marginTop="@dimen/mtrl_card_spacing"
-        android:layout_marginRight="@dimen/mtrl_card_spacing" android:id="@+id/materialCardView">
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp" android:id="@+id/materialCardView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,14 +31,14 @@
                 app:layout_constraintRight_toLeftOf="@id/guideline_vertical"
                 app:layout_constraintTop_toBottomOf="@id/guideline_time"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="8dp"/>
+                android:padding="20dp"/>
 
         <TextView
                 android:id="@+id/forecast_temp"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:textSize="30dp"
+                android:textSize="30sp"
                 app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/guideline_time"
@@ -49,7 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal"

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val locationCallback = object : LocationCallback() {
+        @SuppressLint("RestrictedApi")
         override fun onLocationResult(p0: LocationResult?) {
             super.onLocationResult(p0)
             Log.d("TEST", "location: ${p0?.lastLocation?.latitude}, ${p0?.lastLocation?.longitude}")
@@ -36,6 +38,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             if (p0?.lastLocation?.latitude != null && p0.lastLocation?.longitude != null) {
                 viewModel.getData(p0.lastLocation.latitude, p0.lastLocation.longitude)
             }
+
+            fab_refresh.visibility = View.VISIBLE
         }
     }
 
@@ -64,8 +68,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
                 ActivityCompat.requestPermissions(this@MainActivity,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     MY_PERMISSION_ACCESS_FINE_LOCATION)
-        } else {
-            Toast.makeText(this, "Permission has already been granted", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -76,7 +78,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     ) {
         if (requestCode == MY_PERMISSION_ACCESS_FINE_LOCATION) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                Toast.makeText(this, "Permission was granted", Toast.LENGTH_LONG).show()
+
             } else {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show()
             }

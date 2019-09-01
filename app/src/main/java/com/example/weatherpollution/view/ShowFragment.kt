@@ -1,6 +1,5 @@
 package com.example.weatherpollution.view
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 
 import com.example.weatherpollution.R
 import com.example.weatherpollution.databinding.FragmentShowBinding
@@ -36,11 +34,16 @@ class ShowFragment : Fragment() {
         viewModel.weatherLiveData.observe(viewLifecycleOwner, Observer {
             Log.d("TEST", "main weather db: ${it?.temp}, ${it?.humidity}, ${it?.main}, ${it?.dateTime}")
 
-//            val glide = Glide.with(this)
-//            glide
-//                .load(Uri.parse("http://openweathermap.org/img/w/" + it.icon + ".png"))
-//                .override(current_icon.width, current_icon.height)
-//                .into(current_icon)
+            when(it?.icon) {
+                "01d" -> current_icon.setImageResource(R.drawable.ic_sun)
+                "01n" -> current_icon.setImageResource(R.drawable.ic_moon)
+                "02d", "02n", "03d", "03n", "04d", "04n" -> current_icon.setImageResource(R.drawable.ic_cloud)
+                "09d", "09n", "10d", "10n" -> current_icon.setImageResource(R.drawable.ic_rain)
+                "11d", "11n" -> current_icon.setImageResource(R.drawable.ic_bolt)
+                "13d", "13n" -> current_icon.setImageResource(R.drawable.ic_snow)
+                "50d", "50n" -> current_icon.setImageResource(R.drawable.ic_mist)
+                else -> current_icon.setImageResource(0)
+            }
 
             viewDataBinding.weather = it
         })
